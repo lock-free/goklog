@@ -1,14 +1,15 @@
 package klog
 
 import (
-	"fmt"
 	"bytes"
+	"fmt"
 	"io"
 	"log"
 	"os"
+	"strconv"
+	"strings"
 	"sync"
 	"testing"
-	"strings"
 )
 
 // copied from: https://medium.com/@hau12a1/golang-capturing-log-println-and-fmt-println-output-770209c791b4
@@ -63,8 +64,9 @@ func TestKLog_SetListener(t *testing.T) {
 	actualText := captureOutput(func() {
 		instance.LogIn("demo title", "demo text")
 	})
-	if strings.HasSuffix(actualText, "(demo title) demo text\n") {
-		t.Errorf("%s != %s", actualText, "")
+
+	if strings.Count(actualText, "(demo title) demo text") != 2 {
+		t.Errorf("listener not working")
 	}
 }
 
@@ -80,18 +82,55 @@ func TestKLog_ToggleInspector(t *testing.T) {
 }
 
 func TestKLog_Info(t *testing.T) {
+	instance := GetInstance()
+	instance.ToggleInspector()
 
-}
+	actualText := captureOutput(func() {
+		instance.Info("demo title", "demo text", NORMAL_LEVEL)
+	})
 
-func TestKLog_LogErr(t *testing.T) {
-
+	if !strings.HasSuffix(actualText, "(demo title) demo text\n") {
+		t.Errorf("%s != %s", actualText, "(demo title) demo text\n")
+	}
 }
 
 func TestKLog_LogIn(t *testing.T) {
+	instance := GetInstance()
+	instance.ToggleInspector()
 
+	actualText := captureOutput(func() {
+		instance.LogIn("demo title", "demo text")
+	})
+
+	if !strings.HasSuffix(actualText, "(demo title) demo text\n") {
+		t.Errorf("%#v != %#v", actualText, "(demo title) demo text\n")
+	}
+}
+
+func TestKLog_LogErr(t *testing.T) {
+	instance := GetInstance()
+	instance.ToggleInspector()
+
+	actualText := captureOutput(func() {
+		_, err := strconv.ParseInt("abc", 0, 8)
+		instance.LogErr("demo title", err)
+	})
+
+	if !strings.HasSuffix(actualText, "(error-response-demo title) strconv.ParseInt: parsing \"abc\": invalid syntax\n") {
+		t.Errorf("%s != %s", actualText, "(error-response-demo title) strconv.ParseInt: parsing \"abc\": invalid syntax\n")
+	}
 }
 
 func TestKLog_LogVital(t *testing.T) {
+	instance := GetInstance()
+	instance.inspectOpened = false
 
+	actualText := captureOutput(func() {
+		instance.LogVital("demo title", "demo text")
+	})
+
+	if !strings.HasSuffix(actualText, "(demo title) demo text\n") {
+		t.Errorf("%s != %s", actualText, "(demo title) demo text\n")
+	}
 }
 

@@ -1,15 +1,19 @@
 package klog
 
 import (
-    errors "github.com/go-errors/errors"
     "fmt"
+    "github.com/go-errors/errors"
+    "os"
     "strconv"
     "sync"
-    "os"
     "time"
 )
 
 type ListenerFunc func(string)
+func emptyListener(message string) {
+
+}
+
 type KLog struct {
     listener ListenerFunc
     inspectOpened bool
@@ -56,7 +60,7 @@ func GetInstance() *KLog {
     	    level = NORMAL_LEVEL
         }
         instance = &KLog{
-            listener: nil,
+            listener: emptyListener,
             inspectOpened: false,
             formatter: "2006-01-02-15.04.05.999",
             printLevel: int(level),
@@ -81,7 +85,7 @@ func (klog *KLog) LogIn(title string, text string) {
 
 func (klog *KLog) Info(title string, text string, level int) {
     today := time.Now()
-    logText := fmt.Sprintf("[klog:%s] (%s) %s\n", today.Format(klog.formatter), title, text)
+    logText := fmt.Sprintf("[klog:%s] (%s) %s", today.Format(klog.formatter), title, text)
 
     if level >= klog.printLevel {
         fmt.Println(logText)
@@ -90,11 +94,11 @@ func (klog *KLog) Info(title string, text string, level int) {
     klog.listener(logText)
 }
 
-func (klog *KLog) logVital(title string, text string) {
+func (klog *KLog) LogVital(title string, text string) {
     klog.Info(title, text, VITAL)
 }
 
-func (klog *KLog) logErr(title string, err error) {
+func (klog *KLog) LogErr(title string, err error) {
     errorText := getErrorCallStack(err)
     klog.Info(fmt.Sprintf("error-response-%s", title), errorText, ERROR_LEVEL)
 }
