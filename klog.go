@@ -98,7 +98,7 @@ func (klog *KLog) LogVital(title string, text string) {
     klog.Info(title, text, VITAL)
 }
 
-func (klog *KLog) LogErr(title string, err error) {
+func (klog *KLog) LogError(title string, err error) {
     errorText := getErrorCallStack(err)
     klog.Info(fmt.Sprintf("error-response-%s", title), errorText, ERROR_LEVEL)
 }

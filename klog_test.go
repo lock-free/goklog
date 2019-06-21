@@ -116,13 +116,13 @@ func TestKLog_LogIn(t *testing.T) {
 	}
 }
 
-func TestKLog_LogErr(t *testing.T) {
+func TestKLog_LogError(t *testing.T) {
 	instance := GetInstance()
 	instance.ToggleInspector()
 
 	actualText := captureOutput(func() {
 		_, err := strconv.ParseInt("abc", 0, 8)
-		instance.LogErr("demo title", err)
+		instance.LogError("demo title", err)
 	})
 
 	if !strings.HasSuffix(actualText, "(error-response-demo title) strconv.ParseInt: parsing \"abc\": invalid syntax\n") {
