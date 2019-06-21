@@ -102,3 +102,7 @@ func (klog *KLog) LogErr(title string, err error) {
     errorText := getErrorCallStack(err)
     klog.Info(fmt.Sprintf("error-response-%s", title), errorText, ERROR_LEVEL)
 }
+
+func (klog *KLog) LogNormal(title string, text string) {
+    klog.Info(title, text, NORMAL_LEVEL)
+}

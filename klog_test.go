@@ -96,7 +96,7 @@ func TestKLog_Info(t *testing.T) {
 
 func TestKLog_LogIn(t *testing.T) {
 	instance := GetInstance()
-	instance.ToggleInspector()
+	instance.inspectOpened = true
 
 	actualText := captureOutput(func() {
 		instance.LogIn("demo title", "demo text")
@@ -104,6 +104,15 @@ func TestKLog_LogIn(t *testing.T) {
 
 	if !strings.HasSuffix(actualText, "(demo title) demo text\n") {
 		t.Errorf("%#v != %#v", actualText, "(demo title) demo text\n")
+	}
+
+	instance.inspectOpened = false
+	actualText = captureOutput(func() {
+		instance.LogIn("demo title", "demo text")
+	})
+
+	if !strings.HasSuffix(actualText, "") {
+		t.Errorf("%#v != %#v", actualText, "")
 	}
 }
 
