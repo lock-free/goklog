@@ -1,4 +1,4 @@
-package klog
+package goklog
 
 import (
 	"bytes"
@@ -142,4 +142,3 @@ func TestKLog_LogVital(t *testing.T) {
 		t.Errorf("%s != %s", actualText, "(demo title) demo text\n")
 	}
 }
-
