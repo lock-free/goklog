@@ -125,8 +125,8 @@ func TestKLog_LogError(t *testing.T) {
 		instance.LogError("demo title", err)
 	})
 
-	if !strings.HasSuffix(actualText, "(error-response-demo title) strconv.ParseInt: parsing \"abc\": invalid syntax\n") {
-		t.Errorf("%s != %s", actualText, "(error-response-demo title) strconv.ParseInt: parsing \"abc\": invalid syntax\n")
+	if !strings.Contains(actualText, "(error-response-demo title) strconv.ParseInt: parsing \"abc\": invalid syntax\n") {
+		t.Errorf("%s does not contain %s", actualText, "(error-response-demo title) strconv.ParseInt: parsing \"abc\": invalid syntax\n")
 	}
 }
 

@@ -2,11 +2,12 @@ package goklog
 
 import (
 	"fmt"
-	"github.com/go-errors/errors"
 	"os"
 	"strconv"
 	"sync"
 	"time"
+
+	"github.com/pkg/errors"
 )
 
 type ListenerFunc func(string)
@@ -46,12 +47,8 @@ func getErrorCallStack(e error) string {
 		return ""
 	}
 
-	e0, ok := e.(*errors.Error)
-	if !ok {
-		return e.Error()
-	}
-	callStack := string(e0.ErrorStack())
-	return callStack
+	err := errors.Errorf(e.Error())
+	return fmt.Sprintf("%+v\n", err)
 }
 
 func GetInstance() *KLog {
